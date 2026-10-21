@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>المحور الرابع: مسؤوليات المهندس تجاه العملاء</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      color: #f8fafc;
+    }
+
+    .quiz-card {
+      background: #1e293b;
+      width: 100%;
+      max-width: 750px;
+      border-radius: 24px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+      padding: 35px;
+      border: 1px solid #334155;
+      position: relative;
+    }
+
+    .quiz-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 25px;
+      border-bottom: 2px solid #334155;
+      padding-bottom: 15px;
+    }
+
+    .axis-title {
+      font-size: 14px;
+      background: #3b82f6;
+      color: #ffffff;
+      padding: 4px 12px;
+      border-radius: 12px;
+      font-weight: 700;
+    }
+
+    .question-count {
+      font-size: 15px;
+      font-weight: 700;
+      color: #94a3b8;
+    }
+
+    .score-badge {
+      font-size: 16px;
+      font-weight: 700;
+      color: #38bdf8;
+    }
+
+    .question-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #f1f5f9;
+      margin-bottom: 25px;
+      line-height: 1.6;
+    }
+
+    .options-container {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 30px;
+    }
+
+    .btn-option {
+      background: #334155;
+      border: 2px solid #475569;
+      border-radius: 14px;
+      padding: 16px 20px;
+      font-size: 16px;
+      font-weight: 600;
+      color: #e2e8f0;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.2s ease;
+      text-align: right;
+      width: 100%;
+    }
+
+    .btn-option:hover:not([disabled]) {
+      border-color: #3b82f6;
+      background-color: #1e293b;
+    }
+
+    /* حالة الإجابة الصحيحة - أخضر */
+    .btn-option.correct {
+      background-color: #065f46 !important;
+      border-color: #10b981 !important;
+      color: #ecfdf5 !important;
+    }
+
+    /* حالة الإجابة الخاطئة - أحمر */
+    .btn-option.wrong {
+      background-color: #991b1b !important;
+      border-color: #ef4444 !important;
+      color: #fef2f2 !important;
+    }
+
+    .btn-option:disabled {
+      cursor: not-allowed;
+    }
+
+    .quiz-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-next {
+      background: #3b82f6;
+      color: white;
+      border: none;
+      padding: 12px 30px;
+      font-size: 17px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-next:hover:not([disabled]) {
+      background: #2563eb;
+      transform: translateY(-2px);
+    }
+
+    .btn-next:disabled {
+      background: #475569;
+      cursor: not-allowed;
+      opacity: 0.6;
+    }
+
+    /* شاشة النتيجة النهائية */
+    .result-box {
+      text-align: center;
+      padding: 20px 0;
+    }
+
+    .result-icon {
+      font-size: 70px;
+      color: #10b981;
+      margin-bottom: 20px;
+    }
+
+    .result-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 10px;
+    }
+
+    .result-score {
+      font-size: 20px;
+      color: #94a3b8;
+      margin-bottom: 30px;
+    }
+
+    .btn-restart {
+      background: #10b981;
+      color: white;
+      border: none;
+      padding: 14px 35px;
+      font-size: 18px;
+      font-weight: 700;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn-restart:hover {
+      background: #059669;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="quiz-card" id="quizCard">
+    <!-- هيدر الأسئلة -->
+    <div class="quiz-header">
+      <span class="axis-title">المحور الرابع: مسئولية المهندس تجاه العملاء</span>
+      <span class="question-count" id="questionCount">السؤال 1 من 40</span>
+      <span class="score-badge" id="scoreText">النقاط: 0</span>
+    </div>
+
+    <!-- نص السؤال -->
+    <div class="question-title" id="questionTitle">
+      جاري تحميل السؤال...
+    </div>
+
+    <!-- خيارات الإجابة -->
+    <div class="options-container" id="optionsContainer">
+      <!-- الخيارات تظهر تلقائياً -->
+    </div>
+
+    <!-- الفوتر مع زر التالي -->
+    <div class="quiz-footer">
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()" disabled>
+        التالي <i class="fas fa-arrow-left"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+    // 40 سؤالاً حصرياً ومخصصاً للمحور الرابع (20 اختيار من متعدد + 20 صح وخطأ)
+    const questions = [
+      // ----- الجزء الأول: 20 سؤال اختيار من متعدد -----
+      {
+        question: "1. ما هو الواجب الأساسي للمهندس عند التنبؤ باحتمالية عدم نجاح المشروع لأي سبب؟",
+        options: ["تجاهل الأمر والبدء في التنفيذ", "إعادة تصميم المشروع سراً", "إخطار العميل فوراً بتوقع عدم النجاح", "إلغاء المشروع دون الرجوع للعميل"],
+        correct: 2
+      },
+      {
+        question: "2. التصميمات والمستندات والسجلات الهندسية التي ينتجها المهندس لحساب العميل تعتبر:",
+        options: ["ملكية خاصة للمهندس يوزعها متى شاء", "ملكية عامة للدولة", "ملكية خاصة للعميل ما لم يوجد اتفاق يقضي بغير ذلك", "ملكية لشركة المقاولات المنفذة"],
+        correct: 2
+      },
+      {
+        question: "3. كيف يتصرف المهندس إذا اتخذ العميل قراراً مخالفاً للرأي الفني بما يعرض الأرواح للخطر؟",
+        options: ["ينفذ رغبة العميل فوراً", "ينصح العميل بالعدول، فإن لم يقبل يبلغ الجهات المختصة", "يستقيل بهدوء دون إبلاغ أي طرف", "يتجاهل التحذيرات المكتوبة"],
+        correct: 1
+      },
+      {
+        question: "4. متى يجوز للمهندس الإفصاح عن المعلومات والبيانات السرية الخاصة بمشروع العميل؟",
+        options: ["في أي وقت مع الأصدقاء", "لصالح فوائده الشخصية والمالية", "عندما يطلب منه القانون أو لحماية أمان الآخرين من خطر عاجل", "عند البيع لشركات منافسة"],
+        correct: 2
+      },
+      {
+        question: "5. ما هو موقف المهندس من إجراء التغييرات في حجم أو طبيعة المشروع المكتوب في العقد؟",
+        options: ["إجراء التغييرات فوراً دون علم العميل", "عدم إجراء أي تغيير إلا بعد الحصول على موافقة العميل", "إجراء التغييرات إذا كانت سريعة فقط", "تغيير بنود العقد تلقائياً"],
+        correct: 1
+      },
+      {
+        question: "6. إذا تبين للمهندس بعد الدراسة وجود مخاطر بيئية أو آثار سلبية للمشروع، يجب عليه:",
+        options: ["إخفاء الأمر لضمان استمرار التعاقد", "إخطار العملاء فوراً بهذه الآثار والمخاطر", "تحميل المقاول جميع التكاليف والمسؤولية", "الانسحاب المفاجئ دون تبرير"],
+        correct: 1
+      },
+      {
+        question: "7. كيف يتعامل المهندس مع أطراف التعاقد (العملاء، المقاولين، الموردين) أثناء الإشراف؟",
+        options: ["بالتحيز المستمر للعميل لأنه مصدر الأتعاب", "بالحيادية والموضوعية والاستقلال التام عن جميع الأطراف", "بالتحيز للمقاول للإسراع في التنفيذ", "بتجاهل بند السلامة بطلب من العميل"],
+        correct: 1
+      },
+      {
+        question: "8. إذا كان للمهندس مصلحة مالية أو علاقة عمل قد تؤثر على قراراته في المشروع، يجب عليه:",
+        options: ["إخفاء هذه العلاقة عن العميل", "إطلاع العميل على طبيعة هذه العلاقة فوراً", "الاستمرار دون إعلام العميل", "تنازل العميل عن أرباحه"],
+        correct: 1
+      },
+      {
+        question: "9. يلتزم المهندس بتوفير إحاطة للعميل عن مراحل إعداد وتطور المشروع عبر:",
+        options: ["إطلاعه بصورة دورية ومستمرة على كل جديد", "الحديث معه عند نهاية المشروع فقط", "إخفاء التفاصيل المالية نهائياً", "عدم تقديم تقارير فنية"],
+        correct: 0
+      },
+      {
+        question: "10. ما الحكم إذا استخدم المهندس تصميمات أو بيانات قدمها له العميل في مشروع آخر؟",
+        options: ["يجوز له ذلك بحرية كاملة", "لا يجوز له إعادة استخدامها إلا بعلم العميل وموافقته", "يجوز إذا كانت الفكرة بسيطة", "تصبح ملكاً للمهندس فور الاستلام"],
+        correct: 1
+      },
+      {
+        question: "11. عند قيام المهندس بدور الاستشاري أو المحكم بين العميل والمقاول، يجب أن تتسم قراراته بـ:",
+        options: ["التحيز الكامل للعميل فقط", "النزاهة والعدل وعدم التحيز لأي طرف على حساب الآخر", "فرض شروط مجحفة على المقاول", "تأجيل البت في الخلافات indefinitely"],
+        correct: 1
+      },
+      {
+        question: "12. في حالة حصول المهندس على اختراع أو بحث ممول من عميل، فإن إعادة استخدامه في مشروع جديد تتطلب:",
+        options: ["موافقة كتابية مسبقة من العميل الأول", "استخدامه مباشرة دون إذن", "تغيير اسم المشروع فقط", "دفع رسوم بسيطة للمحكمة"],
+        correct: 0
+      },
+      {
+        question: "13. إذا أوقف العميل أحكام وقرارات المهندس المشرف أثناء تنفيذ المنشأة، يتوجب على المهندس:",
+        options: ["الاستمرار في العمل وكأن شيئاً لم يكن", "إبلاغ العميل والسلطات بالنتائج وإخلاء مسؤوليته عن الأمان والسلامة", "تعديل المخططات سراً", "الصمت التام"],
+        correct: 1
+      },
+      {
+        question: "14. ما التزام المهندس في حال طلب منه العميل تحقيق مصالح بوسائل تخرق القوانين؟",
+        options: ["تلبية طلب العميل طالما يدفع الأتعاب", "الامتناع والالتزام بالصراحة والصدق وعدم ادعاء قدرته على خرق القانون", "مساعدة العميل في التحايل على القانون", "تأجيل الأمر"],
+        correct: 1
+      },
+      {
+        question: "15. هل يجوز للمهندس استخدام المعلومات السرية التي اؤتمن عليها من العميل لتحقيق فائدة شخصية؟",
+        options: ["نعم يحق له ذلك", "لا يجوز له مطلقاً استخدامها لفائدته الذاتية أو للغير", "يجوز إذا لم يعلم العميل", "يجوز بعد انتهاء المشروع فقط"],
+        correct: 1
+      },
+      {
+        question: "16. إذا أدخل العميل تعديلات على العمل الهندسي الأصلي تؤثر سلباً عليه، يجب على المهندس:",
+        options: ["الموافقة دون نقاش", "إبلاغ العميل والسلطات المختصة وتوضيح مكامن الخطورة", "إخفاء الخطورة عن الجمهور", "المطالبة بزيادة أتعابه فقط"],
+        correct: 1
+      },
+      {
+        question: "17. أداء المهندس لمسؤولياته المهنية تجاه العميل والمقاول يجب أن يكون قائمًا على:",
+        options: ["المصلحة الذاتية للمهندس", "العدالة والإنصاف والتطبيق السليم للأسس الهندسية", "تخفيض التكاليف بغض النظر عن الجودة", "الإنحياز التام لمن يدفع أكثر"],
+        correct: 1
+      },
+      {
+        question: "18. الواجب الأخلاقي الأول للمهندس في تقديم خدماته المهنية للعميل هو أن يكون:",
+        options: ["محتكراً لجميع القرارات", "وكيلاً وممثلاً مخلصاً يراعي مصالح العميل بنزاهة", "مستغلاً لقلة خبرة العميل", "متجاهلاً لملاحظات العميل الفنية"],
+        correct: 1
+      },
+      {
+        question: "19. عند إعادة استخدام التصميمات الهندسية الخاصة بالعميل في مشاريع أخرى، يجب على العميل:",
+        options: ["مسح اسم المهندس الأصلي", "احترام حق الملكية الفكرية للمهندس وتبيان ذلك بصورة واضحة", "إعادة بيعها بدون إذن", "تغيير اللوحة الهندسية"],
+        correct: 1
+      },
+      {
+        question: "20. يلتزم المهندس بإخطار العملاء أو المقاولين بتعارض المصالح بغرض:",
+        options: ["إلغاء العقود فوراً", "إزالة مسببات التضارب لإبداء الرأي النزيه والحيادي", "رفع قيمة الأتعاب الهندسية", "تأخير تسليم المشروع"],
+        correct: 1
+      },
+
+      // ----- الجزء الثاني: 20 سؤال صواب وخطأ -----
+      {
+        question: "21. تعتبر جميع التصميمات والتقارير التي ينتجها المهندس لحساب العميل ملكية خاصة للعميل ما لم يتفق على غير ذلك.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "22. يحق للمهندس إفشاء البيانات والمعلومات السرية الخاصة بالعميل للشركات المنافسة تحقيقاً للربح.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "23. يجب على المهندس إخطار العميل بصورة دورية بمستجدات وتطورات مراحل إعداد المشروع.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "24. يجوز للمهندس إدخال تغييرات جوهرية على حجم وتكلفة المشروع دون الحاجة لموافقة العميل.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "25. يجب على المهندس إبلاغ السلطات المختصة إذا أصر العميل على قرار مخالف للرأي الفني يهدد الأرواح والممتلكات.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "26. يحق للمهندس استخدام معلومات العميل السرية لتحقيق منافع شخصية بعد انتهاء التعاقد دون موافقته.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "27. الالتزام بالحيادية والموضوعية بين العميل والمقاول واجب على المهندس حتى وإن كان العميل هو من يدفع الأتعاب.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "28. يجب على المهندس إخفاء المخاطر البيئية المحتملة للمشروع عن العميل لضمان استمرار العمل.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "29. يجب على المهندس الإفصاح للعميل عن أي مصلحة مالية أو علاقة قد تؤثر على قراراته المهنية.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "30. يجوز للمهندس إعادة استخدام تصميمات عميل سابق في مشروع جديد لعميل آخر دون علمه أو موافقته.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "31. يلتزم المهندس بالصدق مع العميل وعدم ادعاء القدرة على تحقيق نتائج بوسائل تخالف القانون.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "32. إذا توقع المهندس عدم نجاح المشروع، فيجب عليه الامتناع عن إبلاغ العميل حتى ينتهي التنفيذ.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "33. يحق للمهندس الامتناع عن إخلاء مسؤوليته إذا قام العميل بوقف قراراته الخاصة بسلامة المنشأة.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "34. يلتزم المهندس بأن يكون وكيلاً أميناً وممثلاً مخلصاً لعميله في كافة المراحل الهندسية.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "35. يعتبر كشف أسرار العميل بطلب من المحكمة أو بقوة القانون مخالفة لأخلاقيات المهنة.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "36. يجب على العميل احترام الحق الأدبي والملكية الفكرية للمهندس عند إعادة استخدام المخططات.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "37. يجوز للمهندس إخفاء وجود تعارض في المصالح إذا كان التعارض بسيطاً وغير ملحوظ.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "38. يتعين على المهندس التزام الشفافية والأمانة في تقديم مواعيد وتسليم مراحل المشروع للعميل.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      },
+      {
+        question: "39. إذا أدخل العميل تعديلات خطيرة على المنشأة، فإن دور المهندس يقتصر على الصمت التام.",
+        options: ["صح", "خطأ"],
+        correct: 1
+      },
+      {
+        question: "40. الاستعانة بتصميمات أو بيانات العميل دون الاعتراف بحقه في ملكيتها يعد انتهاكاً لأخلاقيات المهنة.",
+        options: ["صح", "خطأ"],
+        correct: 0
+      }
+    ];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let answered = false;
+
+    const questionTitleEl = document.getElementById('questionTitle');
+    const optionsContainerEl = document.getElementById('optionsContainer');
+    const questionCountEl = document.getElementById('questionCount');
+    const scoreTextEl = document.getElementById('scoreText');
+    const btnNext = document.getElementById('btnNext');
+    const quizCard = document.getElementById('quizCard');
+
+    function loadQuestion() {
+      answered = false;
+      btnNext.disabled = true;
+      
+      const currentQ = questions[currentQuestionIndex];
+      
+      questionCountEl.textContent = `السؤال ${currentQuestionIndex + 1} من ${questions.length}`;
+      questionTitleEl.textContent = currentQ.question;
+      
+      optionsContainerEl.innerHTML = '';
+
+      currentQ.options.forEach((optionText, index) => {
+        const button = document.createElement('button');
+        button.className = 'btn-option';
+        
+        button.innerHTML = `
+          <span>${optionText}</span>
+          <span class="icon-holder"></span>
+        `;
+        
+        button.onclick = () => selectAnswer(index, button);
+        optionsContainerEl.appendChild(button);
+      });
+    }
+
+    function selectAnswer(selectedIndex, selectedButton) {
+      if (answered) return;
+      answered = true;
+
+      const currentQ = questions[currentQuestionIndex];
+      const allButtons = optionsContainerEl.querySelectorAll('.btn-option');
+
+      allButtons.forEach(btn => btn.disabled = true);
+
+      if (selectedIndex === currentQ.correct) {
+        score++;
+        scoreTextEl.textContent = `النقاط: ${score}`;
+        selectedButton.classList.add('correct');
+        selectedButton.querySelector('.icon-holder').innerHTML = '<i class="fas fa-check-circle" style="color:#10b981; font-size:20px;"></i>';
+      } else {
+        selectedButton.classList.add('wrong');
+        selectedButton.querySelector('.icon-holder').innerHTML = '<i class="fas fa-times-circle" style="color:#ef4444; font-size:20px;"></i>';
+
+        const correctButton = allButtons[currentQ.correct];
+        correctButton.classList.add('correct');
+        correctButton.querySelector('.icon-holder').innerHTML = '<i class="fas fa-check-circle" style="color:#10b981; font-size:20px;"></i>';
+      }
+
+      btnNext.disabled = false;
+    }
+
+    function nextQuestion() {
+      currentQuestionIndex++;
+      if (currentQuestionIndex < questions.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      quizCard.innerHTML = `
+        <div class="result-box">
+          <i class="fas fa-award result-icon"></i>
+          <h2 class="result-title">أحسنت يا بشمهندس!</h2>
+          <p class="result-score">لقد أكملت جميع أسئلة <strong>المحور الرابع (مسؤولية المهندس تجاه العملاء)</strong> بنجاح.<br><br> درجتك النهائية هي: <strong style="color:#38bdf8; font-size:24px;">${score}</strong> من <strong>${questions.length}</strong></p>
+          <button class="btn-restart" onclick="location.reload()">إعادة الاختبار <i class="fas fa-redo"></i></button>
+        </div>
+      `;
+    }
+
+    // تشغيل الاختبار فور التحميل
+    loadQuestion();
+  </script>
+</body>
+</html>
